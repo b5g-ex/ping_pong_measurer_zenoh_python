@@ -1,38 +1,37 @@
-from collections.abc import Callable, Iterable, Mapping
-from typing import Any
-import zenoh, threading
-from zenoh.session import Publisher
+from typing import Any, Iterator
+import logging
 
-class Ping(threading.Thread):
-    def __init__(self, node_id: int, ping_max: int = 10):
+import zenoh
+from zenoh.session import Session
+
+class Ping():
+    def __init__(self, 
+                 node_id: int, 
+                 session: Session, 
+                 ping_max: int = 10
+                 ) -> None:
+
         self._node_id = node_id
+        self.session = session
         self._ping_max = ping_max
         self._counter = 0
-        threading.Thread.__init__(self, name ='ping')
+        self._ping_key = "ping_topic" + str(node_id)
+        self._pong_key = "pong_topic" + str(node_id)
 
-    def __str__(self):
-        return 'ping multithreading'
-    
-    def get_ping_max(self):
-        return self._ping_max
-    
-    def get_node_id(self):
-        return self._node_id
-    
-    def callback(self, node_id: int, publisher: Publisher, message: str):
-        return 
-    
-    # def run(self):
+        self.publisher = self.session.declare_publisher(self._ping_key)
 
+        self.subscriber = self.session.declare_subscriber(
+            self._pong_key, 
+            self.callback
+            )
 
+    def callback(self, message:str):
+        if self._counter < self._ping_max:
+            self.ping(message)
+            self._counter += 1
+        else:
+            logging.info(f"ping {self._node_id} reached ping_max")
+            
 
-if __name__ == "__main__":
-    session = zenoh.open()
-    key = 'myhome/kitchen/temp'
-    pub = session.declare_publisher(key)
-    while True:
-        t = read_temp()
-        buf = f"{t}"
-        print(f"Putting Data ('{key}': '{buf}')...")
-        pub.put(buf)
-        time.sleep(1)
+    def ping(self, message:str):
+        self.publisher.put(message)
