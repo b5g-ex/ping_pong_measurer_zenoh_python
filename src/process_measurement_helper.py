@@ -26,7 +26,7 @@ if __name__ == "__main__":
             # publish ping message concurrently
             results = executor.map(functools.partial(pzp.start_ping_pong, message), iter_ping)
         
-        logging.info(">>>>>>>>>> #{i}/#{measurement_times}")
+            print(f">>>>>>>>>> #{i}/#{measurement_times}")
 
     pzp.stop_ping_measurer()
     pzp.stop_ping_processes()

@@ -1,2 +1,4 @@
 sample_*
 sample/
+.mypy_cache
+src/__pycache__
