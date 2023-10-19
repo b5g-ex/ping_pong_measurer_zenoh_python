@@ -23,7 +23,10 @@ def start_ping_processes(
 def start_ping_measurer() -> None:
     pass
 
-def start_ping_pong(message: str, ping_node: Ping) -> None:
+def start_ping_pong(message: str, node_id: int) -> None:
+    # TODO: ping_max を引数に取る（Pingに与える）
+    session = zenoh.open()
+    ping_node = Ping(node_id, session)
     ping_node.ping(message)
 
 def stop_ping_measurer() -> None:

@@ -18,16 +18,18 @@ def start_pong_processes(
                  for i in range(num_nodes))
     return None
 
-def start_pong_serving(pong_node: Pong):
+def start_pong_serving(node_id: int):
+    session = zenoh.open()
+    pong_node = Pong(node_id, session)
     pong_node.start()
     
 
 if __name__ == "__main__":
     node_num = 1
     session = zenoh.open()
-    pong_nodes = [Pong(x, session) for x in range(node_num)]
+
     with concurrent.futures.ProcessPoolExecutor() as executor:        
-        results = executor.map(start_pong_serving, pong_nodes)
+        results = executor.map(start_pong_serving, list(range(node_num)))
 
     for result in results:
         print(type(result))

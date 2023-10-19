@@ -15,18 +15,14 @@ if __name__ == "__main__":
     payload_bytes = 100
     message = 'a' * payload_bytes
 
-    # iterator of ping.Ping
-    iter_ping = pzp.start_ping_processes(node_num) 
-    pzp.start_ping_measurer()
-
 
     for i in range(measurement_times):
     # ProcessPoolExecutor の場合
         with concurrent.futures.ProcessPoolExecutor() as executor:
             # publish ping message concurrently
-            results = executor.map(functools.partial(pzp.start_ping_pong, message), iter_ping)
+            results = executor.map(functools.partial(pzp.start_ping_pong, message = message), list(range(node_num)))
         
-            print(f">>>>>>>>>> #{i}/#{measurement_times}")
+        print(f">>>>>>>>>> #{i}/#{measurement_times}")
 
     pzp.stop_ping_measurer()
     pzp.stop_ping_processes()
