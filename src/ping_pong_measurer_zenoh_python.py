@@ -1,7 +1,7 @@
 import concurrent.futures
-
 from typing import List, Iterator
 
+import zenoh
 from zenoh.session import Session
 
 import ping
@@ -11,9 +11,10 @@ from pong import Pong
 
 def start_ping_processes(
         num_nodes: int, 
-        session: Session, 
         ping_max: int = 10
         ) -> Iterator[Ping]:
+    
+    session = zenoh.open()
     ping_iter = (ping.Ping(i, session, ping_max) 
                  for i in range(num_nodes))
     return ping_iter

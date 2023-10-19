@@ -11,14 +11,12 @@ import ping_pong_measurer_zenoh_python as pzp
 
 if __name__ == "__main__":
     measurement_times = 10
-    node_num = 5
+    node_num = 1
     payload_bytes = 100
     message = 'a' * payload_bytes
 
-    session = zenoh.open()
-
     # iterator of ping.Ping
-    iter_ping = pzp.start_ping_processes(session, node_num) 
+    iter_ping = pzp.start_ping_processes(node_num) 
     pzp.start_ping_measurer()
 
 
