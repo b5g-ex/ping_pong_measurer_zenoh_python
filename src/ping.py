@@ -34,6 +34,7 @@ class Ping():
         else:
             logging.info(f"ping {self._node_id} reached ping_max")
             print(f"ping {self._node_id} reached ping_max")
+            
 
     def ping(self, message:str):
         self.publisher.put(message)

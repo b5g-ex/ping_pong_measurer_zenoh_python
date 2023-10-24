@@ -23,9 +23,16 @@ def start_ping_processes(
 def start_ping_measurer() -> None:
     pass
 
-def start_ping_pong(message: str, node_id: int) -> None:
+def start_ping_pong(node_id: int, message: str) -> None:
     # TODO: ping_max を引数に取る（Pingに与える）
+    # session をノードごとにつくるバージョン　(cf. start_ping_pong_session)
     session = zenoh.open()
+    ping_node = Ping(node_id, session)
+    ping_node.ping(message)
+
+def start_ping_pong_session(node_id: int, session: Session, message: str) -> None:
+    # TODO: ping_max を引数に取る（Pingに与える）
+    # session を全ノードで共有するバージョン　(cf. start_ping_pong)
     ping_node = Ping(node_id, session)
     ping_node.ping(message)
 

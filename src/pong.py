@@ -38,7 +38,6 @@ class Pong():
             time.sleep(5)
 
 if __name__ == "__main__":
-    print("aaa")
     session = zenoh.open()
     pong = Pong(0, session)
 
