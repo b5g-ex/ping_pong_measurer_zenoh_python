@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     for i in range(measurement_times):
     # ProcessPoolExecutor の場合
-        with concurrent.futures.ProcessPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
             # publish ping message concurrently
             results = executor.map(functools.partial(pzp.start_ping_pong, message = message), list(range(node_num)))
         
