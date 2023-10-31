@@ -1,8 +1,10 @@
 from typing import Any, Iterator
 import logging
+from queue import Queue
 
 import zenoh
 from zenoh.session import Session, Sample
+
 
 class Ping():
     def __init__(self, 
@@ -10,7 +12,7 @@ class Ping():
                  session: Session, 
                  ping_max: int = 10
                  ) -> None:
-
+        self.queue = Queue()
         self._node_id = node_id
         # self.session = session : session はpickle できない
         self._ping_max = ping_max
@@ -34,7 +36,12 @@ class Ping():
         else:
             logging.info(f"ping {self._node_id} reached ping_max")
             print(f"ping {self._node_id} reached ping_max")
+            self.queue.put("end")
             
 
     def ping(self, message:str):
         self.publisher.put(message)
+
+    def start(self,message:str):
+        self.ping(message)
+        self.queue.get()
