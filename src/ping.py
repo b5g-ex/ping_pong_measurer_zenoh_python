@@ -34,8 +34,7 @@ class Ping():
             self.ping(message)
             self._counter += 1
         else:
-            logging.info(f"ping {self._node_id} reached ping_max")
-            print(f"ping {self._node_id} reached ping_max")
+            # print(f"ping {self._node_id} reached ping_max")
             self.queue.put("end")
             
 
