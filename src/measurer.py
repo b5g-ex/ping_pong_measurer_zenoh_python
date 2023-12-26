@@ -14,24 +14,26 @@ class Measurement():
 
 @dataclass
 class State():
+    node_id: int = 0
     ping_counts: int =  0
-    measurements: Measurement = Measurement()
-    data_directory_path: str =  ""
-    process_index: int = 0
+    # measurements: Measurement = Measurement() Stateを先に定義してからMeasurerを作るように変更
+    
 
 class Measurer():
     node_id_prefix = 'ping_node'
-    def __init__(self, state: State) -> None:
-        self.state = state
+    def __init__(self, state: State, data_directory_path: str) -> None:
+        self._state = state
+        self._data_directory_path = data_directory_path
+        
 
     def get_ping_counts(self) -> int:
-        return self.state.ping_counts
+        return self._state.ping_counts
 
     def increment_ping_counts(self) -> int:
-        self.state.ping_counts += 1
+        self._state.ping_counts += 1
 
     def reset_ping_counts(self) -> None:
-        self.state.ping_counts = 0
+        self._state.ping_counts = 0
     
     def start_measurement(self, send_time: int) -> None:
         pass
@@ -40,9 +42,9 @@ class Measurer():
         pass
 
     def get_measurement_time(self) -> None:
-        return self.state.measurements
+        return self._state.measurements
 
     def terminate(self) -> None:
-        pass
+        
 
 
