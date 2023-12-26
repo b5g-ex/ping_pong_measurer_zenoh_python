@@ -14,8 +14,8 @@ class Measurement():
 
 @dataclass
 class State():
-    ping_counts:int =  0
-    measurements: List[Measurement] = []
+    ping_counts: int =  0
+    measurements: Measurement = Measurement()
     data_directory_path: str =  ""
     process_index: int = 0
 
@@ -33,7 +33,7 @@ class Measurer():
     def reset_ping_counts(self) -> None:
         self.state.ping_counts = 0
     
-    def start_measurement(self) -> None:
+    def start_measurement(self, send_time: int) -> None:
         pass
 
     def stop_measurement(self) -> None:
