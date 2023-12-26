@@ -1,18 +1,23 @@
+from time import perf_counter_ns as timer
 from typing import Any, Iterator
 import logging
-
+from queue import Queue
 import zenoh
 from zenoh.session import Session, Sample
+
+from measurer import Measurer
 
 class Ping():
     def __init__(self, 
                  node_id: int, 
                  session: Session, 
+                 measurer: Measurer,
                  ping_max: int = 10
                  ) -> None:
-
+        self.queue = Queue()
         self._node_id = node_id
-        # self.session = session : session はpickle できない
+        self.session = session
+        self.measurer = measurer
         self._ping_max = ping_max
         self._counter = 0
         self._ping_key = "ping_topic" + str(node_id)
@@ -32,9 +37,14 @@ class Ping():
             self.ping(message)
             self._counter += 1
         else:
-            logging.info(f"ping {self._node_id} reached ping_max")
-            print(f"ping {self._node_id} reached ping_max")
+            self.measurer.stop_measurement(timer())
+            self.queue.put("end")
             
 
     def ping(self, message:str):
         self.publisher.put(message)
+
+    def start(self,message:str):
+        self.measurer.start_measurement(timer())
+        self.ping(message)
+        self.queue.get()
