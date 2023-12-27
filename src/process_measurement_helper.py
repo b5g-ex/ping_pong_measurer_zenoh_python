@@ -2,6 +2,7 @@ import concurrent.futures
 import datetime
 import functools
 import os
+from time import perf_counter_ns as timer
 
 import zenoh
 from zenoh.session import Session, Sample
@@ -14,20 +15,27 @@ from measurer import Measurer, State
 # ping pong using Zenoh-python in multithread
 
 class PingThread():
-    def __init__(self, session: Session, message: str, measurer: Measurer):
+    def __init__(self, session: Session, messages: list[str], measurers: list[Measurer]):
         self._session = session
-        self._message = message
-        self._measurer = measurer
-        # self._node_id = node_id : start_ping_pong に与える
+        self._messages = messages
+        self._measurers = measurers
     
     def start_ping_pong(self, node_id: int):
-        ping_node = Ping(node_id, self._session, self._measurer)
-        ping_node.start(self._message)
+        measurer = self._measurers[node_id]
+        ping_node = Ping(node_id, self._session, measurer)
 
-class MeasureThread():
-    def __init__(self, node_id: int):
-        self._ping_node_id = node_id
+        measurer.start_measurement(timer())
+        ping_node.start(self._messages[node_id])
+        # measurer.stop_measurement(timer())
+        # TODO:なぜか stop_measurementが何回も呼ばれる
+
     
+def get_now_string() -> str:
+    t_delta = datetime.timedelta(hours=9)
+    JST = datetime.timezone(t_delta, 'JST')
+    now = datetime.datetime.now(JST)
+    now_string = now.strftime('%Y%m%d%H%M%S')
+    return now_string
 
 
 if __name__ == "__main__":
@@ -35,28 +43,27 @@ if __name__ == "__main__":
     node_num = 1
     payload_bytes = 100
     message = 'a' * payload_bytes
+    messages = [message for _ in range(node_num)]
     session = zenoh.open()
 
-    start_pp = PingThread(session, message)
-    # TODO: 
-    # t_delta = datetime.timedelta(hours=9)
-    # JST = datetime.timezone(t_delta, 'JST')
-    # now = datetime.datetime.now(JST)
-    # now_string = now.strftime('%Y%m%d%H%M%S')
-    # TODO: data_folder_path = os.path.join("./data/",now_string)
-    # TODO: Measurer の作成 measurers = [Measururer(state(node_id = i, data_directory_path = data_folder_path)) for i in range(node_num)]
+    
+    now_str = get_now_string()
+    data_folder_path = os.path.join("./data/",now_str)
+    
+    
 
-    for i in range(measurement_times):
+    for m_time in range(measurement_times):
+        measurers = [Measurer(State(node_id = i),  data_directory_path = data_folder_path) for i in range(node_num)]
+        start_pp = PingThread(session, messages, measurers)
     # ThreadPoolExecutor の場合
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # publish ping message concurrently
-            # results = executor.map(functools.partial(pzp.start_ping_pong, message = message), list(range(node_num)))
             results = executor.map(start_pp.start_ping_pong, list(range(node_num)))
 
-        print(f">>>>>>>>>> #{i+1}/#{measurement_times}")
+        print(f">>>>>>>>>> #{m_time+1}/#{measurement_times}")
 
     print("end ping loop")
 
-    pzp.stop_ping_measurer() # measurer の起動はThreadPoolExecutorの中で（このオーバーヘッドが大きいと予想するので）
+    pzp.stop_ping_measurer() # measurer の測定開始はThreadPoolExecutorの中で（このオーバーヘッドが大きいと予想するので）
     pzp.stop_ping_processes()
     pzp.stop_os_info_measurement()

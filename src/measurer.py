@@ -16,6 +16,7 @@ class Measurement():
 class State():
     node_id: int = 0
     ping_counts: int =  0
+
     # measurements: Measurement = Measurement() Stateを先に定義してからMeasurerを作るように変更
     
 
@@ -35,16 +36,16 @@ class Measurer():
     def reset_ping_counts(self) -> None:
         self._state.ping_counts = 0
     
-    def start_measurement(self, send_time: int) -> None:
-        pass
+    def start_measurement(self, start_time: int) -> None:
+        print(f"start time:{start_time}")
 
-    def stop_measurement(self) -> None:
-        pass
+    def stop_measurement(self, end_time: int) -> None:
+        print(f"end time:{end_time}")
 
     def get_measurement_time(self) -> None:
         return self._state.measurements
 
     def terminate(self) -> None:
-        
+        pass
 
 
