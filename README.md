@@ -1,6 +1,5 @@
 # ping_pong_measurer_zenoh_python
 
----
 # How to prepare
 
 Requirements:
