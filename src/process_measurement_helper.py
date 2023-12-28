@@ -41,7 +41,7 @@ def get_now_string() -> str:
 
 if __name__ == "__main__":
     measurement_times = 10
-    node_num = 1
+    node_num = 5
     payload_bytes = 100
     message = 'a' * payload_bytes
     messages = [message for _ in range(node_num)]

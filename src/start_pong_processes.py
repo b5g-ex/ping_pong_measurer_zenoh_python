@@ -33,7 +33,7 @@ def start_pong_serving_session(node_id: int, session: Session)-> None:
     pong_node.start()
 
 if __name__ == "__main__":
-    node_num = 1
+    node_num = 5
 
     with concurrent.futures.ProcessPoolExecutor() as executor:        
         results = executor.map(start_pong_serving, list(range(node_num)))
