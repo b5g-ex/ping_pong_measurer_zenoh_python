@@ -19,12 +19,12 @@ pip install ./target/wheels/<there should only be one .whl file here>
 
 # How to Use
 
-In pong node
+In terminal for pong node
 ```bash
 python start_pong_processes.py
 ```
 
-In ping node
+In terminal for ping node
 ```bash
 python process_measurement_helper.py
 ```
