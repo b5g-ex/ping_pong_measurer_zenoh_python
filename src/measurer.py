@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Iterator, List
 import logging
@@ -16,6 +16,8 @@ class Measurement():
 class State():
     node_id: int = 0
     ping_counts: int =  0
+    start_time: int = 0 # in mili second
+    measure_time: list[list[int, int]] = field(default_factory=list) # [[start_time, end_time], [start_time, end_time], ...]
 
     # measurements: Measurement = Measurement() Stateを先に定義してからMeasurerを作るように変更
     
@@ -37,9 +39,11 @@ class Measurer():
         self._state.ping_counts = 0
     
     def start_measurement(self, start_time: int) -> None:
+        self._state.start_time = start_time
         print(f"start time:{start_time}")
 
     def stop_measurement(self, end_time: int) -> None:
+        self._state.measure_time.append([self._state.start_time, end_time])
         print(f"end time:{end_time}")
 
     def get_measurement_time(self) -> None:

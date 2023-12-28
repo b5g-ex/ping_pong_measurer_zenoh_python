@@ -46,5 +46,3 @@ class Ping():
     def start(self,message:str):
         self.ping(message)
         self.queue.get()
-        # print(timer())
-        print("end of start")

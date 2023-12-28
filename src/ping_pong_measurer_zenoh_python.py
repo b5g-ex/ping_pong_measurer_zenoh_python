@@ -8,6 +8,7 @@ import ping
 import pong
 from ping import Ping
 from pong import Pong
+from measurer import Measurer
 
 def start_ping_processes(
         num_nodes: int, 
@@ -36,8 +37,16 @@ def start_ping_pong_session(node_id: int, session: Session, message: str) -> Non
     ping_node = Ping(node_id, session)
     ping_node.start(message)
 
-def stop_ping_measurer() -> None:
-    pass
+def stop_ping_measurer(measurers: list[Measurer]) -> None:
+
+    for measurer in measurers:
+        with open(f"{measurer._data_directory_path}/{measurer._state.node_id:04}.csv", mode='w') as file:
+            file.write("measurement_time(utc),send time[microsecond],recv time[microsecond],took time[ms]\n")
+            for start_time, end_time in measurer._state.measure_time:
+                file.write(f", {start_time}, {end_time}, {end_time - start_time}\n")
+                # utc の行はとりあえずなしにしておく
+
+
 
 def stop_ping_processes() -> None:
     pass

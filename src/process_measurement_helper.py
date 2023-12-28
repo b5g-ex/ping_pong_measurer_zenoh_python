@@ -24,10 +24,11 @@ class PingThread():
         measurer = self._measurers[node_id]
         ping_node = Ping(node_id, self._session, measurer)
 
-        measurer.start_measurement(timer())
+        measurer.start_measurement(timer()/1e6)
+        # perf_counter_ns は nano second
+        # 1 millisecond = 1000,000 nanosecond
         ping_node.start(self._messages[node_id])
-        # measurer.stop_measurement(timer())
-        # TODO:なぜか stop_measurementが何回も呼ばれる
+        measurer.stop_measurement(timer()/1e6)
 
     
 def get_now_string() -> str:
@@ -48,13 +49,19 @@ if __name__ == "__main__":
 
     
     now_str = get_now_string()
-    data_folder_path = os.path.join("./data/",now_str)
-    
+    data_folder_path = os.path.join(f"../data/",f"{now_str}_pc{node_num}_pb{payload_bytes}_mt{measurement_times}")
+    try:
+        os.makedirs(data_folder_path)
+    except FileExistsError:
+        pass
+
+
+    measurers = [Measurer(State(node_id = i),  data_directory_path = data_folder_path) for i in range(node_num)]
+    start_pp = PingThread(session, messages, measurers)
     
 
     for m_time in range(measurement_times):
-        measurers = [Measurer(State(node_id = i),  data_directory_path = data_folder_path) for i in range(node_num)]
-        start_pp = PingThread(session, messages, measurers)
+        
     # ThreadPoolExecutor の場合
         with concurrent.futures.ThreadPoolExecutor() as executor:
             # publish ping message concurrently
@@ -64,6 +71,6 @@ if __name__ == "__main__":
 
     print("end ping loop")
 
-    pzp.stop_ping_measurer() # measurer の測定開始はThreadPoolExecutorの中で（このオーバーヘッドが大きいと予想するので）
+    pzp.stop_ping_measurer(measurers) # measurer の測定開始はThreadPoolExecutorの中で（このオーバーヘッドが大きいと予想するので）
     pzp.stop_ping_processes()
     pzp.stop_os_info_measurement()
