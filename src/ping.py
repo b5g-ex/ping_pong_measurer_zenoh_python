@@ -37,7 +37,6 @@ class Ping():
             self.ping(message)
             self._counter += 1
         else:
-            self.measurer.stop_measurement(timer())
             self.queue.put("end")
             
 
