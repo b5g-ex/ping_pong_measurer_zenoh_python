@@ -1,3 +1,4 @@
+import argparse
 import concurrent.futures
 import functools
 from typing import List, Iterator
@@ -33,7 +34,13 @@ def start_pong_serving_session(node_id: int, session: Session)-> None:
     pong_node.start()
 
 if __name__ == "__main__":
-    node_num = 5
+    parser = argparse.ArgumentParser(description='run pong process')
+    parser.add_argument('--node', type=int, default=5, help='the number of Pong Node (default: 5)')
+
+
+    args = parser.parse_args()
+    node_num = args.node
+
 
     with concurrent.futures.ProcessPoolExecutor() as executor:        
         results = executor.map(start_pong_serving, list(range(node_num)))

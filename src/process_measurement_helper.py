@@ -1,3 +1,4 @@
+import argparse
 import concurrent.futures
 import datetime
 import functools
@@ -40,9 +41,16 @@ def get_now_string() -> str:
 
 
 if __name__ == "__main__":
-    measurement_times = 10
-    node_num = 5
-    payload_bytes = 100
+    parser = argparse.ArgumentParser(description='run pong process')
+    parser.add_argument('--node', type=int, default=5, help='the number of Pong Node (default: 5)')
+    parser.add_argument('--mt', type=int, default=1, help='the number of Measurement (default: 1)')
+    parser.add_argument('--pb', type=int, default=100, help='the payload byte of pingpong message (default: 100)')
+
+
+    args = parser.parse_args()
+    node_num = args.node
+    measurement_times = args.mt
+    payload_bytes = args.pb
     message = 'a' * payload_bytes
     messages = [message for _ in range(node_num)]
     session = zenoh.open()
