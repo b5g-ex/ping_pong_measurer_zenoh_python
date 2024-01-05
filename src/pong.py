@@ -25,7 +25,6 @@ class Pong():
 
     def callback(self, sample: Sample):
         message = sample.payload.decode('utf-8')
-        print("--callback--")
         self.pong(message)
 
     def pong(self, message:str):
@@ -34,7 +33,6 @@ class Pong():
     def start(self):
         while True:
             logging.info("pong: serving")
-            print("sleeping")
             time.sleep(5)
 
 if __name__ == "__main__":

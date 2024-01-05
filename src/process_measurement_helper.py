@@ -75,8 +75,6 @@ if __name__ == "__main__":
             # publish ping message concurrently
             results = executor.map(start_pp.start_ping_pong, list(range(node_num)))
 
-        print(f">>>>>>>>>> #{m_time+1}/#{measurement_times}")
-
     print("end ping loop")
 
     pzp.stop_ping_measurer(measurers) # measurer の測定開始はThreadPoolExecutorの中で（このオーバーヘッドが大きいと予想するので）
