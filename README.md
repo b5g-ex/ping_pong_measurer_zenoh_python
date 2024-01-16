@@ -20,7 +20,7 @@ pip install ./target/wheels/<there should only be one .whl file here>
 
 In terminal for pong node
 ```bash
-python src/start_pong_processes.py　--node 5
+python src/start_pong_processes.py --node 5
 ```
 5 pong nodes are running
 
