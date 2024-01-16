@@ -12,7 +12,7 @@ class Ping():
                  node_id: int, 
                  session: Session, 
                  measurer: Measurer,
-                 ping_max: int = 10
+                 ping_max: int = 1
                  ) -> None:
         self.queue = Queue()
         self._node_id = node_id

@@ -40,11 +40,9 @@ class Measurer():
     
     def start_measurement(self, start_time: int) -> None:
         self._state.start_time = start_time
-        print(f"start time:{start_time}")
 
     def stop_measurement(self, end_time: int) -> None:
         self._state.measure_time.append([self._state.start_time, end_time])
-        print(f"end time:{end_time}")
 
     def get_measurement_time(self) -> None:
         return self._state.measurements
