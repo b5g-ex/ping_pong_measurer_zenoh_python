@@ -16,14 +16,15 @@ from measurer import Measurer, State
 # ping pong using Zenoh-python in multithread
 
 class PingThread():
-    def __init__(self, session: Session, messages: list[str], measurers: list[Measurer]):
+    def __init__(self, ping_max: int, session: Session, messages: list[str], measurers: list[Measurer]):
+        self._ping_max = ping_max
         self._session = session
         self._messages = messages
         self._measurers = measurers
     
     def start_ping_pong(self, node_id: int):
         measurer = self._measurers[node_id]
-        ping_node = Ping(node_id, self._session, measurer)
+        ping_node = Ping(node_id, self._session, measurer, self._ping_max)
 
         measurer.start_measurement(timer()/1e6)
         # perf_counter_ns は nano second
@@ -43,21 +44,23 @@ def get_now_string() -> str:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run pong process')
     parser.add_argument('--node', type=int, default=5, help='the number of Pong Node (default: 5)')
-    parser.add_argument('--mt', type=int, default=1, help='the number of Measurement (default: 1)')
+    parser.add_argument('--mt', type=int, default=100, help='the number of Measurement (default: 100)')
     parser.add_argument('--pb', type=int, default=100, help='the payload byte of pingpong message (default: 100)')
-
+    parser.add_argument('--pt', type=int, default=1, help='the number of pingpong (default: 1)')
+    
 
     args = parser.parse_args()
     node_num = args.node
     measurement_times = args.mt
     payload_bytes = args.pb
+    pingpong_times = args.pt
     message = 'a' * payload_bytes
     messages = [message for _ in range(node_num)]
     session = zenoh.open()
 
     
     now_str = get_now_string()
-    data_folder_path = os.path.join(f"../data/",f"{now_str}_pc{node_num}_pb{payload_bytes}_mt{measurement_times}")
+    data_folder_path = os.path.join(f"./data/",f"{now_str}_pc{node_num}_pb{payload_bytes}_mt{measurement_times}_pt{pingpong_times}")
     try:
         os.makedirs(data_folder_path)
     except FileExistsError:
@@ -65,7 +68,7 @@ if __name__ == "__main__":
 
 
     measurers = [Measurer(State(node_id = i),  data_directory_path = data_folder_path) for i in range(node_num)]
-    start_pp = PingThread(session, messages, measurers)
+    start_pp = PingThread(pingpong_times, session, messages, measurers)
     
 
     for m_time in range(measurement_times):
@@ -79,4 +82,4 @@ if __name__ == "__main__":
 
     pzp.stop_ping_measurer(measurers) # measurer の測定開始はThreadPoolExecutorの中で（このオーバーヘッドが大きいと予想するので）
     pzp.stop_ping_processes()
-    pzp.stop_os_info_measurement()
+    # pzp.stop_os_info_measurement()
