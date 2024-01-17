@@ -5,3 +5,4 @@ src/__pycache__
 *.pyc
 .DS_Store
 data/
+/ping_pong_measurer_zenoh_python
