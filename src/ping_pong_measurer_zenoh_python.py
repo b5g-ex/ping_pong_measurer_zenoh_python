@@ -37,7 +37,7 @@ def start_ping_pong_session(node_id: int, session: Session, message: str) -> Non
     ping_node = Ping(node_id, session)
     ping_node.start(message)
 
-def stop_ping_measurer(measurers: list[Measurer]) -> None:
+def stop_ping_measurer(measurers: List[Measurer]) -> None:
 
     for measurer in measurers:
         with open(f"{measurer._data_directory_path}/{measurer._state.node_id:04}.csv", mode='w') as file:

@@ -1,5 +1,5 @@
 from time import perf_counter_ns as timer
-from typing import Any, Iterator
+from typing import Any, Iterator, List
 import logging
 from queue import Queue
 import zenoh

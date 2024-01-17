@@ -4,6 +4,7 @@ import datetime
 import functools
 import os
 from time import perf_counter_ns as timer
+from typing import Any, Iterator, List
 
 import zenoh
 from zenoh.session import Session, Sample
@@ -16,7 +17,7 @@ from measurer import Measurer, State
 # ping pong using Zenoh-python in multithread
 
 class PingThread():
-    def __init__(self, ping_max: int, session: Session, messages: list[str], measurers: list[Measurer]):
+    def __init__(self, ping_max: int, session: Session, messages: List[str], measurers: List[Measurer]):
         self._ping_max = ping_max
         self._session = session
         self._messages = messages
