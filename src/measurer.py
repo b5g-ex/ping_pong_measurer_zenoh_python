@@ -17,7 +17,7 @@ class State():
     node_id: int = 0
     ping_counts: int =  0
     start_time: int = 0 # in mili second
-    measure_time: list[list[int, int]] = field(default_factory=list) # [[start_time, end_time], [start_time, end_time], ...]
+    measure_time: list[list[int]] = field(default_factory=list) # [[start_time, end_time], [start_time, end_time], ...]
 
     # measurements: Measurement = Measurement() Stateを先に定義してからMeasurerを作るように変更
     
