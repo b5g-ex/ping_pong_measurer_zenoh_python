@@ -3,7 +3,7 @@
 # How to prepare
 
 Requirements:
-- python3
+- python >= 3.9
 - elipse-zenoh
 
 please follow [how to install elipse-zenoh](https://github.com/eclipse-zenoh/zenoh-python)
