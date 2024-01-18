@@ -41,7 +41,7 @@ def stop_ping_measurer(measurers: List[Measurer]) -> None:
 
     for measurer in measurers:
         with open(f"{measurer._data_directory_path}/{measurer._state.node_id:04}.csv", mode='w') as file:
-            file.write("measurement_time(utc),send time[microsecond],recv time[microsecond],took time[ms]\n")
+            file.write("measurement_time(utc),send time[ms],recv time[ms],took time[ms]\n")
             for start_time, end_time in measurer._state.measure_time:
                 file.write(f", {start_time}, {end_time}, {end_time - start_time}\n")
                 # utc の行はとりあえずなしにしておく
