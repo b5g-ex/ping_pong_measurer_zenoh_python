@@ -1,6 +1,6 @@
 import argparse
 import concurrent.futures
-import functools
+from functools import partial
 from typing import List, Iterator
 
 import zenoh
@@ -47,11 +47,14 @@ if __name__ == "__main__":
     ping_node_num = args.pingnode
     node_num = args.node
 
+    session = zenoh.open()
+    start_pong_serving_w_session = partial(start_pong_serving_session, session = session)
+
     if m2one:
         start_pong_many2one_serving(ping_node_num)
     else: 
         with concurrent.futures.ProcessPoolExecutor() as executor:        
-            results = executor.map(start_pong_serving, list(range(node_num)))
+            results = executor.map(start_pong_serving_w_session, list(range(node_num)))
 
     
 
