@@ -7,3 +7,5 @@ src/__pycache__
 data/
 /ping_pong_measurer_zenoh_python
 .python-version
+ping_pong_measurer_zenoh_python
+ppmzp

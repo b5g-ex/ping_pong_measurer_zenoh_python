@@ -20,8 +20,8 @@ class Ping():
         self.measurer = measurer
         self._ping_max = ping_max
         self._counter = 0
-        self._ping_key = "ping_topic" + str(node_id)
-        self._pong_key = "pong_topic" + str(node_id)
+        self._ping_key = "ping_topic/" + str(node_id)
+        self._pong_key = "pong_topic/" + str(node_id)
 
         self.publisher = session.declare_publisher(self._ping_key)
 
