@@ -10,7 +10,10 @@ please follow [how to install elipse-zenoh](https://github.com/eclipse-zenoh/zen
 
 ```bash
 git clone https://github.com/eclipse-zenoh/zenoh-python.git
-curl https://sh.rustup.rs -sSf | sh
+```
+then, install [rustup](https://rustup.rs/)
+next,
+```bash
 pip install -r requirements-dev.txt
 export PATH="$HOME/.local/bin:$PATH"
 maturin build --release
