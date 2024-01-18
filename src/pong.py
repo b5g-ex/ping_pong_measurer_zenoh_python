@@ -13,8 +13,8 @@ class Pong():
 
         self._node_id = node_id
         # self.session = session : session はpickleできない？
-        self._ping_key = "ping_topic" + str(node_id)
-        self._pong_key = "pong_topic" + str(node_id)
+        self._ping_key = "ping_topic/" + str(node_id)
+        self._pong_key = "pong_topic/" + str(node_id)
 
         self.publisher = session.declare_publisher(self._pong_key)
 
