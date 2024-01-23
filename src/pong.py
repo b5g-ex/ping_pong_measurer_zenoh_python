@@ -1,6 +1,7 @@
 from typing import Any, Iterator, List
 import logging
 import time
+from functools import partial
 
 import zenoh
 from zenoh.session import Session, Sample
@@ -44,23 +45,29 @@ class PongManyToOne():
 
         self._node_num = node_num
         # self.session = session : session はpickleできない？
-        self._ping_key = "ping_topic/**"
+        self._ping_keys = ["pong_topic/" + str(node_id) for node_id in range(node_num)]
         self._pong_keys = ["pong_topic/" + str(node_id) for node_id in range(node_num)]
 
-        self.publishers = [session.declare_publisher(pong_key) for pong_key in self._pong_keys]
+        self.publishers = [
+            session.declare_publisher(pong_key) 
+            for pong_key in self._pong_keys
+            ]
 
-        self.subscriber = session.declare_subscriber(
-            self._ping_key, 
-            self.callback
+        self.subscribers = [
+            session.declare_subscriber(
+            ping_key, 
+            partial(self.callback, node_id = node_id)
             )
+            for node_id, ping_key in enumerate(self._ping_keys)
+            ]
 
-    def callback(self, sample: Sample):
+    def callback(self, node_id: int, sample: Sample):
         message = sample.payload.decode('utf-8')
-        self.pong(message)
+        self.pong(node_id, message)
 
-    def pong(self, message:str):
-        for publisher in self.publishers:   
-            publisher.put(message)
+    def pong(self, node_id, message:str):
+        publisher = self.publishers[node_id]  
+        publisher.put(message)
 
     def start(self):
         while True:
