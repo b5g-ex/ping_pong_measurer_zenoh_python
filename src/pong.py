@@ -45,7 +45,7 @@ class PongManyToOne():
 
         self._node_num = node_num
         # self.session = session : session はpickleできない？
-        self._ping_keys = ["pong_topic/" + str(node_id) for node_id in range(node_num)]
+        self._ping_keys = ["ping_topic/" + str(node_id) for node_id in range(node_num)]
         self._pong_keys = ["pong_topic/" + str(node_id) for node_id in range(node_num)]
 
         self.publishers = [
