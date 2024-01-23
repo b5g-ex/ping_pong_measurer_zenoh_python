@@ -61,7 +61,7 @@ class PongManyToOne():
             for node_id, ping_key in enumerate(self._ping_keys)
             ]
 
-    def callback(self, node_id: int, sample: Sample):
+    def callback(self, sample: Sample, node_id: int):
         message = sample.payload.decode('utf-8')
         self.pong(node_id, message)
 
