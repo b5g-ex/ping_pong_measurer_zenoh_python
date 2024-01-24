@@ -33,7 +33,6 @@ class Pong():
 
     def start(self):
         while True:
-            logging.info("pong: serving")
             time.sleep(5)
 
 
@@ -71,8 +70,38 @@ class PongManyToOne():
 
     def start(self):
         while True:
-            logging.info("pong: serving")
             time.sleep(5)
+
+class PongManyToOneToOne():
+    def __init__(self, 
+                 node_num: int, 
+                 session: Session, 
+                 ) -> None:
+
+        self._node_num = node_num
+        ping_key = "ping_topic"
+        pong_key = "pong_topic"
+
+        self.publisher = session.declare_publisher(pong_key) 
+
+        self.subscriber = session.declare_subscriber(
+            ping_key, 
+            self.callback
+        )
+
+
+    def callback(self, sample: Sample):
+        message = sample.payload.decode('utf-8')
+        self.pong(message)
+
+    def pong(self, message:str):
+        publisher = self.publisher 
+        publisher.put(message)
+
+    def start(self):
+        while True:
+            time.sleep(5)
+
 
 if __name__ == "__main__":
     session = zenoh.open()
