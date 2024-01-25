@@ -44,7 +44,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='run pong process')
 
     # for many to many to one pingpong comm.
-    parser.add_argument('--m2one', type=bool, default=True, help='run only one pong for many to many to one ping pong')
+    parser.add_argument('--m2one', type=bool, default=False, help='run only one pong for many to many to one ping pong')
     parser.add_argument('--pingnode', type=int, default=5, help='the number of P"i"ng Node (default: 5)')
 
     # for many to one to one pingpong comm.
