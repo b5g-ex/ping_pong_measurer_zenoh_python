@@ -66,8 +66,8 @@ class PingManyToOneToOne():
         self.measurer = measurer
         self._node_num = node_num
         self._counter = 0
-        self._ping_key = "ping_topic/"
-        self._pong_key = "pong_topic/"
+        self._ping_key = "ping_topic"
+        self._pong_key = "pong_topic"
 
         self.publisher = session.declare_publisher(self._ping_key)
 
