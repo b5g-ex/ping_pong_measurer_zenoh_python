@@ -92,13 +92,11 @@ class PongManyToOneToOne():
 
     def callback(self, sample: Sample):
         message = sample.payload.decode('utf-8')
-        print(f"pong recv")
         self.pong(message)
 
     def pong(self, message:str):
         publisher = self.publisher 
         publisher.put(message)
-        print("pong pong")
 
     def start(self):
         while True:

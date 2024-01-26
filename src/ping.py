@@ -78,7 +78,6 @@ class PingManyToOneToOne():
 
     def callback(self, sample: Sample):
         if self._counter < self._node_num:
-            print(f"ping recv {self._node_id}")
             self._counter += 1
         else:
             self.queue.put("end")
@@ -86,7 +85,6 @@ class PingManyToOneToOne():
 
     def ping(self, message:str):
         self.publisher.put(message)
-        print(f"ping {self._node_id}")
 
     def start(self,message:str):
         self.ping(message)
