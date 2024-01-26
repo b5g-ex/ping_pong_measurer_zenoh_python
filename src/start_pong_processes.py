@@ -51,7 +51,7 @@ if __name__ == "__main__":
     parser.add_argument('--m2one2one', type=bool, default=False, help='run only one pong for many to one to one ping pong')
 
     # for many to many to many pingpong comm.
-    parser.add_argument('--node', type=int, default=5, help='the number of Pong Node (default: 5)')
+    parser.add_argument('--node', type=int, default=1, help='the number of Pong Node (default: 5)')
 
 
     args = parser.parse_args()
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     elif m2one2one:
         start_pong_many2one2one_serving(ping_node_num)
     else: 
-        with concurrent.futures.ProcessPoolExecutor() as executor:        
+        with concurrent.futures.ProcessPoolExecutor(max_workers=node_num) as executor:        
             results = executor.map(start_pong_serving_w_session, list(range(node_num)))
 
     
