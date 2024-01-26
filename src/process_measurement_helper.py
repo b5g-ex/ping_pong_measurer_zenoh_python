@@ -103,7 +103,7 @@ if __name__ == "__main__":
     for m_time in range(measurement_times):
         
     # ThreadPoolExecutor の場合
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=node_num) as executor:
             # publish ping message concurrently
             results = executor.map(start_pp.start_ping_pong, list(range(node_num)))
 
