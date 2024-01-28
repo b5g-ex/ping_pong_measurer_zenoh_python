@@ -68,8 +68,8 @@ if __name__ == "__main__":
     elif m2one2one:
         start_pong_many2one2one_serving(ping_node_num)
     else: 
-        with concurrent.futures.ProcessPoolExecutor() as executor:        
-            results = executor.map(start_pong_serving_w_session, list(range(node_num)))
+        with concurrent.futures.ThreadPoolExecutor() as executor:        
+            results = list(executor.map(start_pong_serving_w_session, list(range(node_num))))
 
     
 
