@@ -34,6 +34,7 @@ class Pong():
     def start(self):
         while True:
             time.sleep(5)
+            print("sleeping")
 
 
 class PongManyToOne():

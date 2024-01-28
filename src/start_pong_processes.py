@@ -37,6 +37,7 @@ def start_pong_many2one2one_serving(node_num: int)-> None:
     pong_node.start()
 
 def start_pong_serving_session(node_id: int, session: Session)-> None:
+    print("pong")
     pong_node = Pong(node_id, session)
     pong_node.start()
 
@@ -68,9 +69,12 @@ if __name__ == "__main__":
     elif m2one2one:
         start_pong_many2one2one_serving(ping_node_num)
     else: 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=node_num) as executor:        
+        print("else")
+        with concurrent.futures.ProcessPoolExecutor(max_workers=node_num) as executor: 
+            print('a')
             results = executor.map(start_pong_serving_w_session, list(range(node_num)))
 
+        print("[bug] end pong")
     
 
     
