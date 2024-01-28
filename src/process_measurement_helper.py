@@ -3,6 +3,8 @@ import concurrent.futures
 import datetime
 import functools
 import os
+import threading
+import time
 from time import perf_counter_ns as timer
 from typing import Any, Iterator, List
 
@@ -17,19 +19,28 @@ from measurer import Measurer, State
 # ping pong using Zenoh-python in multithread
 
 class PingThread():
-    def __init__(self, ping_max: int, session: Session, messages: List[str], measurers: List[Measurer]):
+    def __init__(self, node_num: int, ping_max: int, session: Session, messages: List[str], measurers: List[Measurer]):
+        self._node_num = node_num
         self._ping_max = ping_max
         self._session = session
         self._messages = messages
         self._measurers = measurers
-        self._pingnodes = [
-            Ping(node_id, self._session, measurers[node_id], self._ping_max) 
-            for node_id in range(ping_max)
-            ]
+        # self._pingnodes = [
+        #     Ping(node_id, session, measurers[node_id], ping_max) 
+        #     for node_id in range(ping_max)
+        #     ]
     
     def start_ping_pong(self, node_id: int):
+        global counter
+        node_num = self._node_num
         measurer = self._measurers[node_id]
-        ping_node = self._pingnodes[node_id]
+        ping_node = Ping(node_id, self._session, self._measurers[node_id], self._ping_max)
+        lock = threading.Lock()
+        with lock:
+            counter += 1
+        while counter < node_num:
+            time.sleep(0.00001)
+
         measurer.start_measurement(timer()/1e6)
         # perf_counter_ns は nano second
         # 1 millisecond = 1000,000 nanosecond
@@ -45,9 +56,18 @@ class PingThreadManyToOneToOne():
         self._measurers = measurers
     
     def start_ping_pong(self, node_id: int):
+        global counter
+        node_num = self._node_num
         measurer = self._measurers[node_id]
         ping_node = PingManyToOneToOne(node_id, self._session, measurer, self._node_num)
 
+        lock = threading.Lock()
+        with lock:
+            counter += 1
+        while counter < node_num:
+            time.sleep(0.00001)
+
+        
         measurer.start_measurement(timer()/1e6)
         # perf_counter_ns は nano second
         # 1 millisecond = 1000,000 nanosecond
@@ -84,7 +104,7 @@ if __name__ == "__main__":
     messages = [message for _ in range(node_num)]
     session = zenoh.open()
 
-    
+    counter = 0
     mode = "m11" if m2one2one else "mm1"
     now_str = get_now_string()
     data_folder_path = os.path.join(f"./data/",f"{mode}_pc{node_num}_pb{payload_bytes}_mt{measurement_times}_pt{pingpong_times}_{now_str}")
@@ -100,14 +120,14 @@ if __name__ == "__main__":
     if m2one2one:
         start_pp = PingThreadManyToOneToOne(node_num, session, messages, measurers)
     else:
-        start_pp = PingThread(pingpong_times, session, messages, measurers)
+        start_pp = PingThread(node_num, pingpong_times, session, messages, measurers)
     
 
     for m_time in range(measurement_times):
     # ThreadPoolExecutor の場合
         with concurrent.futures.ThreadPoolExecutor(max_workers=node_num) as executor:
             # publish ping message concurrently
-            results = executor.map(start_pp.start_ping_pong, list(range(node_num)))
+            results = list(executor.map(start_pp.start_ping_pong, list(range(node_num))))
 
     print("end ping loop")
 
