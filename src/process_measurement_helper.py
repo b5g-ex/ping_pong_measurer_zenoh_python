@@ -22,11 +22,14 @@ class PingThread():
         self._session = session
         self._messages = messages
         self._measurers = measurers
+        self._pingnodes = [
+            Ping(node_id, self._session, measurers[node_id], self._ping_max) 
+            for node_id in range(ping_max)
+            ]
     
     def start_ping_pong(self, node_id: int):
         measurer = self._measurers[node_id]
-        ping_node = Ping(node_id, self._session, measurer, self._ping_max)
-
+        ping_node = self._pingnodes[node_id]
         measurer.start_measurement(timer()/1e6)
         # perf_counter_ns は nano second
         # 1 millisecond = 1000,000 nanosecond
@@ -101,7 +104,6 @@ if __name__ == "__main__":
     
 
     for m_time in range(measurement_times):
-        
     # ThreadPoolExecutor の場合
         with concurrent.futures.ThreadPoolExecutor(max_workers=node_num) as executor:
             # publish ping message concurrently
