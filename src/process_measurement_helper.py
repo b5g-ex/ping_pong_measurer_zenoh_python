@@ -104,7 +104,7 @@ if __name__ == "__main__":
     messages = [message for _ in range(node_num)]
     session = zenoh.open()
 
-    counter = 0
+    
     mode = "m11" if m2one2one else "mm1"
     now_str = get_now_string()
     data_folder_path = os.path.join(f"./data/",f"{mode}_pc{node_num}_pb{payload_bytes}_mt{measurement_times}_pt{pingpong_times}_{now_str}")
@@ -125,6 +125,7 @@ if __name__ == "__main__":
 
     for m_time in range(measurement_times):
     # ThreadPoolExecutor の場合
+        counter = 0
         with concurrent.futures.ThreadPoolExecutor(max_workers=node_num) as executor:
             # publish ping message concurrently
             results = list(executor.map(start_pp.start_ping_pong, list(range(node_num))))
