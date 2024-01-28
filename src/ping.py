@@ -19,7 +19,7 @@ class Ping():
         self.session = session
         self.measurer = measurer
         self._ping_max = ping_max
-        self._counter = 0
+        self._counter = 1
         self._ping_key = "ping_topic/" + str(node_id)
         self._pong_key = "pong_topic/" + str(node_id)
 
@@ -65,7 +65,7 @@ class PingManyToOneToOne():
         self.session = session
         self.measurer = measurer
         self._node_num = node_num
-        self._counter = 0
+        self._counter = 1
         self._ping_key = "ping_topic"
         self._pong_key = "pong_topic"
 

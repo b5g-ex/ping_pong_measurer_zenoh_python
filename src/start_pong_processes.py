@@ -51,7 +51,7 @@ if __name__ == "__main__":
     parser.add_argument('--m2one2one', type=bool, default=False, help='run only one pong for many to one to one ping pong')
 
     # for many to many to many pingpong comm.
-    parser.add_argument('--node', type=int, default=5, help='the number of Pong Node (default: 5)')
+    parser.add_argument('--node', type=int, default=1, help='the number of Pong Node (default: 5)')
 
 
     args = parser.parse_args()
